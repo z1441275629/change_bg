@@ -1,6 +1,6 @@
 // const { encode } = require("querystring");
 
-const apiHost = 'http://localhost:3000';
+const apiHost = 'http://192.168.144.38:3000';
 
 function ajax() {
 
@@ -36,15 +36,22 @@ function blobToBase64(blob) {
     });
 }
 
-getPerson.onclick = async function () {
+// getPerson.onclick = async function () {
+    file.onchange = async function () {
     // 判空
+    if (!file.files || !file.files[0]) {
+        return;
+    }
     // 大小判断
+    if (file.files[0].size > 2 * 1024 * 1024) {
+        alert('图片不能超过2M');
+    }
     const image = await blobToBase64(file.files[0]);
-    console.log(image.split(',')[1]);
+    // console.log(image.split(',')[1]);
     const data = {
         image: encodeURI(image.split(',')[1]),
+        type: type.value
     }
-    console.log(JSON.parse(JSON.stringify(data)));
     // return
     fetch(apiHost + '/getPerson', {
         method: "POST",
@@ -53,8 +60,12 @@ getPerson.onclick = async function () {
         console.log(response);
         response.json().then(data => {
             console.log(data);
-            img.src = 'data:image/png;base64,' + data.foreground;
+            if (data.person && data.person.foreground) {
+                img.src = 'data:image/png;base64,' + data.person.foreground;
+            }
+            // cartoon.src = 'data:image/png;base64,' + data.cartoon;
         });
-        
+    }).catch((err) => {
+        alert('出错了：' + err.message);
     });
 }

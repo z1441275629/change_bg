@@ -3,14 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=0" />
+    <title>订制专属海报</title>
+    <link rel="stylesheet" href="./css/index.css" />
 </head>
 <body>
-    <input type="file" id="file" />
-    <button id="getPerson">识别</button>
+    <div class="wrap">
+        <img src="./img/bg.png" alt="" class="bg" />
+        <label>
+            <img src="./img/cartoon.png" alt="" class="uniform" />
+            <input type="file" id="file" accept=".png,.jpg,.jpeg,.bmp" />
+        </label>
+        <img src="./img/qrcode.png" alt="二维码" class="qrcode" />
+        <img src="" alt="" id="img" />
+    </div>
+    
+    <!-- <button id="getPerson">识别</button> -->
 
-    <img src="" alt="" id="img" />
+    <!-- <img src="" alt="" id="cartoon" /> -->
+    <select name="type" id="type">
+        <option value="cartoon">卡通画风格</option>
+        <option value="pencil">彩色铅笔画风格</option>
+        <option value="color_pencil">彩色铅笔画风格</option>
+        <option value="warm">彩色糖块油画风格</option>
+        <option value="wave">神奈川冲浪里油画风格</option>
+        <option value="lavender">薰衣草油画风格</option>
+        <option value="mononoke">奇异油画风格</option>
+        <option value="scream">呐喊油画风格</option>
+        <option value="gothic">哥特油画风格</option>
+    </select>
 
     <script src="./js/index.js"></script>
 </body>
