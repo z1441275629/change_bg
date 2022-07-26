@@ -29,11 +29,8 @@ function getToken() {
         var url = "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=4dRVEAdtk4yk2kreiKQGwmIp&client_secret=NiKQHLZvekRExyO2AFirSEhsWrIUgal9";
         var requestData = {
             grant_type: 'client_credentials',
-            client_id: 'FznU0NMma7cdRZGO1Zdq25uX',
-            client_secret: 'XaL3o7cng7R9suzvY6cIjg11y0ISAhyY',
-            // grant_type: 'client_credentials',
-            // client_id: '4dRVEAdtk4yk2kreiKQGwmIp',
-            // client_secret: 'NiKQHLZvekRExyO2AFirSEhsWrIUgal9',
+            client_id: '4dRVEAdtk4yk2kreiKQGwmIp',
+            client_secret: 'NiKQHLZvekRExyO2AFirSEhsWrIUgal9',
         };
         request({
             url,
@@ -61,10 +58,9 @@ function getToken() {
     });
 }
 
-function getPerson(image, access_token) {
-    console.log(access_token)
+function getPerson(image) {
     return new Promise((resolve, reject) => {
-        var url = "https://aip.baidubce.com/rest/2.0/image-classify/v1/body_seg?access_token=" + access_token;
+        var url = "https://aip.baidubce.com/rest/2.0/image-classify/v1/body_seg?access_token=" + tokenData.access_token;
         var requestData = {
             image: image, // urlencode(imgBase64)
             type: 'foreground',
@@ -81,6 +77,48 @@ function getPerson(image, access_token) {
         }, function (error, response, body) {
             // console.log(error);
             // console.log(response.body);
+            if (!error && response.statusCode == 200) {
+                // console.log(body) // 请求成功的处理逻辑
+                resolve(body);
+            } else {
+                reject(error);
+            }
+        });
+    });
+}
+
+/**
+ * 获取图片对应的卡通图案
+ * @param {string} image 图片base64信息
+ * @param {string} access_token token信息
+ * @returns {Promise<string>}
+ */
+function toCartoon(image, type) {
+    /*
+        cartoon：卡通画风格
+        pencil：铅笔风格
+        color_pencil：彩色铅笔画风格
+        warm：彩色糖块油画风格
+        wave：神奈川冲浪里油画风格
+        lavender：薰衣草油画风格
+        mononoke：奇异油画风格
+        scream：呐喊油画风格
+        gothic：哥特油画风格
+    */
+    return new Promise((resolve, reject) => {
+        var url = "https://aip.baidubce.com/rest/2.0/image-process/v1/style_trans?access_token=" + tokenData.access_token;
+        var requestData = {
+            image, // urlencode(imgBase64)
+            option: type || 'cartoon',
+        };
+        request({
+            url,
+            method: "POST",
+            headers: {
+                "content-type": "application/x-www-form-urlencoded",
+            },
+            form: requestData,
+        }, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 // console.log(body) // 请求成功的处理逻辑
                 resolve(body);
@@ -134,13 +172,34 @@ server.on('request', async function (request, response) {
             })
             request.on('end', async () => {
                 try {
-                    const data = JSON.parse(inputData.toString());
-                    // console.log(data);
-                    // if (!data || !data.image) {
+                    // 先取人物，后转卡通: 除了人物以外的内容又显示了
+                    // const data = JSON.parse(inputData.toString());
+                    // const res = await getPerson(data.image);
+                    // const resJson = JSON.parse(res);
+                    // if (resJson.foreground) {
+                    //     const cartoon = await toCartoon(resJson.foreground);
+                    //     const responseData = {
+                    //         foreground: resJson.foreground,
+                    //         ...JSON.parse(cartoon),
+                    //     }
+                    //     response.write(JSON.stringify(responseData));
+                    //     response.end();
                     //     return;
                     // }
-                    const res = await getPerson(data.image, tokenData.access_token);
-                    // console.log(res);
+                    // 先转卡通，后取人物
+                    const data = JSON.parse(inputData.toString());
+                    const res = await toCartoon(data.image, data.type);
+                    const resJson = JSON.parse(res);
+                    if (resJson.image) {
+                        const cartoon = await getPerson(resJson.image);
+                        const responseData = {
+                            cartoon: resJson.image,
+                            person: JSON.parse(cartoon),
+                        }
+                        response.write(JSON.stringify(responseData));
+                        response.end();
+                        return;
+                    }
                     response.write(res);
                     response.end();
                 } catch (err) {
