@@ -53,3 +53,13 @@ body {
     width: 20vw;
     z-index: 50;
 }
+
+#msg{
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 1px solid #ccc;
+    z-index: 100;
+    color: red;
+    font-size: 20px;
+}
