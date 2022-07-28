@@ -1,8 +1,8 @@
-var http = require('http')
+var http = require("http");
 
-var server = http.createServer()
+var server = http.createServer();
 
-var request = require('request');
+var request = require("request");
 
 let tokenData = null; // 百度的token信息
 // {
@@ -19,72 +19,79 @@ let tokenData = null; // 百度的token信息
 //     res.header("Access-Control-Allow-Origin","*");
 //     //允许的header类型
 //     res.header("Access-Control-Allow-Headers", "content-type");
-//     //跨域允许的请求方式 
+//     //跨域允许的请求方式
 //     res.header("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");
 // });
 
 function getToken() {
-    return new Promise((resolve, reject) => {
-        // var url="https://aip.baidubce.com/oauth/2.0/token";
-        var url = "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=4dRVEAdtk4yk2kreiKQGwmIp&client_secret=NiKQHLZvekRExyO2AFirSEhsWrIUgal9";
-        var requestData = {
-            grant_type: 'client_credentials',
-            client_id: '4dRVEAdtk4yk2kreiKQGwmIp',
-            client_secret: 'NiKQHLZvekRExyO2AFirSEhsWrIUgal9',
-        };
-        request({
-            url,
-            // method: "POST",
-            method: "GET",
-            // json: true,
-            // headers: {
-            //     "content-type": "application/json",
-            // },
-            body: JSON.stringify(requestData)
-            // params: requestData
-        }, function (error, response, body) {
-            console.log(error);
-            console.log(response.body);
-            // {"error":"unsupported_grant_type","error_description":"The authorization grant type is not supported"}
+  return new Promise((resolve, reject) => {
+    // var url="https://aip.baidubce.com/oauth/2.0/token";
+    var url =
+      "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=4dRVEAdtk4yk2kreiKQGwmIp&client_secret=NiKQHLZvekRExyO2AFirSEhsWrIUgal9";
+    var requestData = {
+      grant_type: "client_credentials",
+      client_id: "4dRVEAdtk4yk2kreiKQGwmIp",
+      client_secret: "NiKQHLZvekRExyO2AFirSEhsWrIUgal9",
+    };
+    request(
+      {
+        url,
+        // method: "POST",
+        method: "GET",
+        // json: true,
+        // headers: {
+        //     "content-type": "application/json",
+        // },
+        body: JSON.stringify(requestData),
+        // params: requestData
+      },
+      function (error, response, body) {
+        console.log(error);
+        console.log(response.body);
+        // {"error":"unsupported_grant_type","error_description":"The authorization grant type is not supported"}
 
-            if (!error && response.statusCode == 200) {
-                console.log(body) // 请求成功的处理逻辑
-                tokenData = JSON.parse(body);
-                resolve(body);
-            } else {
-                reject(error);
-            }
-        });
-    });
+        if (!error && response.statusCode == 200) {
+          console.log(body); // 请求成功的处理逻辑
+          tokenData = JSON.parse(body);
+          resolve(body);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
 }
 
 function getPerson(image) {
-    return new Promise((resolve, reject) => {
-        var url = "https://aip.baidubce.com/rest/2.0/image-classify/v1/body_seg?access_token=" + tokenData.access_token;
-        var requestData = {
-            image: image, // urlencode(imgBase64)
-            type: 'foreground',
-        };
-        request({
-            url,
-            method: "POST",
-            headers: {
-                "content-type": "application/x-www-form-urlencoded",
-            },
-            // body: JSON.stringify(requestData),
-            form: requestData,
-            // data: requestData,
-        }, function (error, response, body) {
-            // console.log(error);
-            // console.log(response.body);
-            if (!error && response.statusCode == 200) {
-                // console.log(body) // 请求成功的处理逻辑
-                resolve(body);
-            } else {
-                reject(error);
-            }
-        });
-    });
+  return new Promise((resolve, reject) => {
+    var url = "https://aip.baidubce.com/rest/2.0/image-classify/v1/body_seg?access_token=" + tokenData.access_token;
+    var requestData = {
+      image: image, // urlencode(imgBase64)
+      type: "foreground",
+    };
+    request(
+      {
+        url,
+        method: "POST",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        // body: JSON.stringify(requestData),
+        form: requestData,
+        // data: requestData,
+      },
+      function (error, response, body) {
+        // console.log(error);
+        // console.log(response.body);
+        if (!error && response.statusCode == 200) {
+          // console.log(body) // 请求成功的处理逻辑
+          resolve(body);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
 }
 
 /**
@@ -94,7 +101,7 @@ function getPerson(image) {
  * @returns {Promise<string>}
  */
 function toCartoon(image, type) {
-    /*
+  /*
         cartoon：卡通画风格
         pencil：铅笔风格
         color_pencil：彩色铅笔画风格
@@ -105,28 +112,31 @@ function toCartoon(image, type) {
         scream：呐喊油画风格
         gothic：哥特油画风格
     */
-    return new Promise((resolve, reject) => {
-        var url = "https://aip.baidubce.com/rest/2.0/image-process/v1/style_trans?access_token=" + tokenData.access_token;
-        var requestData = {
-            image, // urlencode(imgBase64)
-            option: type || 'cartoon',
-        };
-        request({
-            url,
-            method: "POST",
-            headers: {
-                "content-type": "application/x-www-form-urlencoded",
-            },
-            form: requestData,
-        }, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                // console.log(body) // 请求成功的处理逻辑
-                resolve(body);
-            } else {
-                reject(error);
-            }
-        });
-    });
+  return new Promise((resolve, reject) => {
+    var url = "https://aip.baidubce.com/rest/2.0/image-process/v1/style_trans?access_token=" + tokenData.access_token;
+    var requestData = {
+      image, // urlencode(imgBase64)
+      option: type || "cartoon",
+    };
+    request(
+      {
+        url,
+        method: "POST",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        form: requestData,
+      },
+      function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          // console.log(body) // 请求成功的处理逻辑
+          resolve(body);
+        } else {
+          reject(error);
+        }
+      }
+    );
+  });
 }
 
 // 当客户端请求过来，就会自动触发服务器的request请求事件，
@@ -137,86 +147,89 @@ function toCartoon(image, type) {
 
 // response：响应对象，可以用来给客户端发送响应消息
 // response.write('我是发送到客户端的数据')
-server.on('request', async function (request, response) {
-    console.log('收到客户端的请求了,请求路径是：' + request.url)
-    //设置允许跨域的域名，*代表允许任意域名跨域
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    //允许的header类型
-    response.setHeader("Access-Control-Allow-Headers", "content-type");
-    //跨域允许的请求方式 
-    response.setHeader("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");
+server.on("request", async function (request, response) {
+  console.log("收到客户端的请求了,请求路径是：" + request.url);
+  //设置允许跨域的域名，*代表允许任意域名跨域
+  response.setHeader("Access-Control-Allow-Origin", "*");
+  //允许的header类型
+  response.setHeader("Access-Control-Allow-Headers", "content-type");
+  //跨域允许的请求方式
+  response.setHeader("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");
 
-    // response.write()可以给客户端发送响应数据
-    // response.write()可以使用多次，但是最后一定要用response.end()来结束响应，否则客户端会一直等待
-    // response.end('我是内容')也可以直接发送响应数据并且直接结束
-    // response.write('我是内容1')
-    // response.write('我是内容2')
-    try {
-        if (request.url === '/token') {
-            getToken().then(res => {
-                response.write(res);
-            }).catch(err => {
-                console.log(err);
-                response.write(err);
-            }).finally(() => {
-                response.end();
-            })
-        } else if (request.url === '/getPerson') {
-            if (!tokenData) {
-                await getToken();
-            }
-            let inputData = '';
-            request.on('data', (postData) => {
-                // 注意 postData 是一个Buffer类型的数据，也就是post请求的数据存到了缓冲区
-                inputData += postData;
-            })
-            request.on('end', async () => {
-                try {
-                    // 先取人物，后转卡通: 除了人物以外的内容又显示了
-                    // const data = JSON.parse(inputData.toString());
-                    // const res = await getPerson(data.image);
-                    // const resJson = JSON.parse(res);
-                    // if (resJson.foreground) {
-                    //     const cartoon = await toCartoon(resJson.foreground);
-                    //     const responseData = {
-                    //         foreground: resJson.foreground,
-                    //         ...JSON.parse(cartoon),
-                    //     }
-                    //     response.write(JSON.stringify(responseData));
-                    //     response.end();
-                    //     return;
-                    // }
-                    // 先转卡通，后取人物
-                    const data = JSON.parse(inputData.toString());
-                    const res = await toCartoon(data.image, data.type);
-                    const resJson = JSON.parse(res);
-                    if (resJson.image) {
-                        const cartoon = await getPerson(resJson.image);
-                        const responseData = {
-                            cartoon: resJson.image,
-                            person: JSON.parse(cartoon),
-                        }
-                        response.write(JSON.stringify(responseData));
-                        response.end();
-                        return;
-                    }
-                    response.write(res);
-                    response.end();
-                } catch (err) {
-                    console.log(err);
-                    response.end(err.message);
-                }
-            })
-        } else {
+  // response.write()可以给客户端发送响应数据
+  // response.write()可以使用多次，但是最后一定要用response.end()来结束响应，否则客户端会一直等待
+  // response.end('我是内容')也可以直接发送响应数据并且直接结束
+  // response.write('我是内容1')
+  // response.write('我是内容2')
+  try {
+    if (request.url === "/api/token") {
+      getToken()
+        .then((res) => {
+          response.write(res);
+        })
+        .catch((err) => {
+          console.log(err);
+          response.write(err);
+        })
+        .finally(() => {
+          response.end();
+        });
+    } else if (request.url === "/api/getPerson") {
+      if (!tokenData) {
+        await getToken();
+      }
+      let inputData = "";
+      request.on("data", (postData) => {
+        // 注意 postData 是一个Buffer类型的数据，也就是post请求的数据存到了缓冲区
+        inputData += postData;
+      });
+      request.on("end", async () => {
+        try {
+          // 先取人物，后转卡通: 除了人物以外的内容又显示了
+          // const data = JSON.parse(inputData.toString());
+          // const res = await getPerson(data.image);
+          // const resJson = JSON.parse(res);
+          // if (resJson.foreground) {
+          //     const cartoon = await toCartoon(resJson.foreground);
+          //     const responseData = {
+          //         foreground: resJson.foreground,
+          //         ...JSON.parse(cartoon),
+          //     }
+          //     response.write(JSON.stringify(responseData));
+          //     response.end();
+          //     return;
+          // }
+          // 先转卡通，后取人物
+          const data = JSON.parse(inputData.toString());
+          const res = await toCartoon(data.image, data.type);
+          const resJson = JSON.parse(res);
+          if (resJson.image) {
+            const cartoon = await getPerson(resJson.image);
+            const responseData = {
+              cartoon: resJson.image,
+              person: JSON.parse(cartoon),
+            };
+            response.write(JSON.stringify(responseData));
             response.end();
+            return;
+          }
+          response.write(res);
+          response.end();
+        } catch (err) {
+          console.log(err);
+          response.end(err.message);
         }
-    } catch (err) {
-        console.log(err);
-        response.end('something wrong');
+      });
+    } else {
+      response.end();
     }
-})
+  } catch (err) {
+    console.log(err);
+    response.end("something wrong");
+  }
+});
 
 server.listen(3000, function () {
-    console.log('服务器启动成功')
-    // 当服务器启动成功后就可以通过http://127.0.0.1:3000/进行访问
-})
+  console.log("服务器启动成功");
+  // 当服务器启动成功后就可以通过http://127.0.0.1:3000/进行访问
+});
