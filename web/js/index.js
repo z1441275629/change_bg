@@ -336,13 +336,31 @@ function downLoad(url, fileName) {
   oA.remove(); // 下载之后把创建的元素删除
 }
 
+savedImg.onclick = function () {
+  savedImg.classList.add('hide');
+}
+
+function toast(msg) {
+  var p = document.createElement('p');
+  // p.id = 'toast';
+  p.innerText = msg;
+  document.body.appendChild(p);
+  setTimeout(() => {
+    // p.classList.add('hide');
+    p.remove();
+  }, 2000);
+}
+
 function downloadImg() {
   const dom = document.querySelector('.wrap');
 
   html2canvas(dom).then(canvas => {
     // document.body.appendChild(canvas);
     const url = saveAsPNG(canvas);
+    savedImg.src = url;
+    savedImg.classList.remove('hide');
     downLoad(url, new Date().toLocaleTimeString() + '.png');
+    toast('长按图片保存到本地');
   });
 
   return;
