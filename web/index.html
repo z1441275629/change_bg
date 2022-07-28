@@ -1,62 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=0"
-    />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=0" />
     <title>订制专属海报</title>
     <link rel="stylesheet" href="./css/index.css" />
-  </head>
-  <body>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            max-width: 1000px;
+        }
+
+        .wrap {
+            width: 100vw;
+            min-height: 100vh;
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+        }
+
+        .wrap .bg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            object-fit: fill;
+        }
+
+        .wrap .uniform {
+            position: absolute;
+            right: 0;
+            top: 63.5vw;
+            width: 40vw;
+            z-index: 100;
+        }
+
+        .wrap .qrcode {
+            position: absolute;
+            left: 4vw;
+            top: 138vw;
+            width: 20vw;
+            z-index: 100;
+        }
+
+        .file {
+            display: none;
+        }
+
+        .img {
+            position: absolute;
+            right: 3vw;
+            bottom: 0;
+            width: 80vw;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body>
     <div class="wrap">
-      <!-- <div id="msg">66</div> -->
-      <img src="./img/bg.png" alt="" class="bg" />
-      <label>
-        <img src="./img/cartoon.png" alt="" class="uniform" />
-        <input type="file" id="file" accept=".png,.jpg,.jpeg,.bmp" />
-        <img src="./img/光头.png" alt="" id="img" />
-      </label>
-      <img src="./img/qrcode.png" alt="二维码" class="qrcode" />
+        <img src="./img/bg_1.jpg" alt="" class="bg" />
+        <img src="" alt="" id="img" class="img" />
+        <img src="./img/qrcode.png" alt="二维码" class="qrcode" />
     </div>
 
     <div class="bottom-buttons">
-      <span class="btn">换背景</span>
-      <span class="btn">换风格</span>
-      <label>
-        <span class="btn">上传人物照片</span>
-        <input type="file" id="file" accept=".png,.jpg,.jpeg,.bmp" />
-      </label>
-      <span class="btn">保存</span>
+        <span class="btn choose-bg-btn">换背景</span>
+        <!-- <span class="btn">换风格</span> -->
+        <select name="type" id="type">
+            <option value="">原图</option>
+            <option value="cartoon">卡通画风格</option>
+            <option value="pencil">彩色铅笔画风格</option>
+            <option value="color_pencil">彩色铅笔画风格</option>
+            <option value="warm">彩色糖块油画风格</option>
+            <option value="wave">神奈川冲浪里油画风格</option>
+            <option value="lavender">薰衣草油画风格</option>
+            <option value="mononoke">奇异油画风格</option>
+            <option value="scream">呐喊油画风格</option>
+            <option value="gothic">哥特油画风格</option>
+        </select>
+        <label>
+            <span class="btn" id="uploadBtn">上传人物照片</span>
+            <input type="file" id="file" class="file" accept=".png,.jpg,.jpeg,.bmp" />
+        </label>
+        <span class="btn save">保存</span>
     </div>
 
-    <div class="clip-img">
-      <!-- 对图片进行裁剪和压缩 -->
-      <img src="" alt="" />
-      <canvas></canvas>
-      <div class="buttons">
-        <button>取消</button>
-        <button>确定</button>
-      </div>
-    </div>
-    <select name="type" id="type">
-      <option value="">原图</option>
-      <option value="cartoon">卡通画风格</option>
-      <option value="pencil">彩色铅笔画风格</option>
-      <option value="color_pencil">彩色铅笔画风格</option>
-      <option value="warm">彩色糖块油画风格</option>
-      <option value="wave">神奈川冲浪里油画风格</option>
-      <option value="lavender">薰衣草油画风格</option>
-      <option value="mononoke">奇异油画风格</option>
-      <option value="scream">呐喊油画风格</option>
-      <option value="gothic">哥特油画风格</option>
-    </select>
+    <img src="" alt="" id="showOriginImg">
 
-    <div class="dragBoxClass"></div>
+    <!-- 对图片进行裁剪和压缩 -->
+    <div class="choose-bg modal hide">
+        <div class="box">
+            <div class="content-body">
+                <img src="./img/bg_1.jpg" data-src="bg_1.jpg" alt="" />
+                <img src="./img/bg_2.jpg" data-src="bg_2.jpg" alt="" />
+                <img src="./img/bg_3.jpg" data-src="bg_3.jpg" alt="" />
+                <img src="./img/bg_4.jpg" data-src="bg_4.jpg" alt="" />
+                <img src="./img/bg_5.jpg" data-src="bg_5.jpg" alt="" />
+            </div>
+            <!-- <div class="buttons footer">
+                <button>取消</button>
+                <button>确定</button>
+            </div> -->
+        </div>
+    </div>
+
+    <div class="gap"></div>
 
     <script src="./js/clip.js"></script>
     <script src="./js/index.js"></script>
-  </body>
+    <script sync src="./js/html2canvas.min.js"></script>
+</body>
+
 </html>
