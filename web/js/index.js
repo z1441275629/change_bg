@@ -1,7 +1,7 @@
 // const { encode } = require("querystring");
 
-const apiHost = "http://localhost:3000";
-// const apiHost = location.origin;
+// const apiHost = "http://localhost:3000";
+const apiHost = location.origin;
 
 function ajax() { }
 
@@ -42,6 +42,7 @@ async function getPeople() {
   // 判空
   if (!file.files || !file.files[0]) {
     type.disabled = false;
+    file.disabled = false;
     uploadBtn.innerText = '上传人物照片';
     return;
   }
