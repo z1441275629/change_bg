@@ -1,39 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=0"
+    />
     <title>订制专属海报</title>
     <link rel="stylesheet" href="./css/index.css" />
-</head>
-<body>
+  </head>
+  <body>
     <div class="wrap">
-        <!-- <div id="msg">66</div> -->
-        <img src="./img/bg.png" alt="" class="bg" />
-        <label>
-            <img src="./img/cartoon.png" alt="" class="uniform" />
-            <input type="file" id="file" accept=".png,.jpg,.jpeg,.bmp" />
-            <img src="./img/光头.png" alt="" id="img" />
-        </label>
-        <img src="./img/qrcode.png" alt="二维码" class="qrcode" />
+      <!-- <div id="msg">66</div> -->
+      <img src="./img/bg.png" alt="" class="bg" />
+      <label>
+        <img src="./img/cartoon.png" alt="" class="uniform" />
+        <input type="file" id="file" accept=".png,.jpg,.jpeg,.bmp" />
+        <img src="./img/光头.png" alt="" id="img" />
+      </label>
+      <img src="./img/qrcode.png" alt="二维码" class="qrcode" />
     </div>
-    
-    <!-- <button id="getPerson">识别</button> -->
 
-    <!-- <img src="" alt="" id="cartoon" /> -->
+    <div class="bottom-buttons">
+      <span class="btn">换背景</span>
+      <span class="btn">换风格</span>
+      <label>
+        <span class="btn">上传人物照片</span>
+        <input type="file" id="file" accept=".png,.jpg,.jpeg,.bmp" />
+      </label>
+      <span class="btn">保存</span>
+    </div>
+
+    <div class="clip-img">
+      <!-- 对图片进行裁剪和压缩 -->
+      <img src="" alt="" />
+      <canvas></canvas>
+      <div class="buttons">
+        <button>取消</button>
+        <button>确定</button>
+      </div>
+    </div>
     <select name="type" id="type">
-        <option value="cartoon">卡通画风格</option>
-        <option value="pencil">彩色铅笔画风格</option>
-        <option value="color_pencil">彩色铅笔画风格</option>
-        <option value="warm">彩色糖块油画风格</option>
-        <option value="wave">神奈川冲浪里油画风格</option>
-        <option value="lavender">薰衣草油画风格</option>
-        <option value="mononoke">奇异油画风格</option>
-        <option value="scream">呐喊油画风格</option>
-        <option value="gothic">哥特油画风格</option>
+      <option value="">原图</option>
+      <option value="cartoon">卡通画风格</option>
+      <option value="pencil">彩色铅笔画风格</option>
+      <option value="color_pencil">彩色铅笔画风格</option>
+      <option value="warm">彩色糖块油画风格</option>
+      <option value="wave">神奈川冲浪里油画风格</option>
+      <option value="lavender">薰衣草油画风格</option>
+      <option value="mononoke">奇异油画风格</option>
+      <option value="scream">呐喊油画风格</option>
+      <option value="gothic">哥特油画风格</option>
     </select>
 
+    <div class="dragBoxClass"></div>
+
+    <script src="./js/clip.js"></script>
     <script src="./js/index.js"></script>
-</body>
+  </body>
 </html>

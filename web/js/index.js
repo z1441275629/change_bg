@@ -1,7 +1,7 @@
 // const { encode } = require("querystring");
 
-// const apiHost = 'http://192.168.144.38:3000';
-const apiHost = location.origin;
+const apiHost = "http://localhost:3000";
+// const apiHost = location.origin;
 
 function ajax() {}
 
@@ -34,13 +34,38 @@ function blobToBase64(blob) {
     };
   });
 }
+window.clip = new Clip({
+  dragBoxClass: "dragBoxClass", //裁剪框类名
+  clipRadio: 1 / 1, //裁剪比例  宽/高  传0或空或不传等于不设置比例
+  //单位px  仅为裁剪框的宽高  不等同裁剪后最终图片宽高
+  initialHeight: 100, //裁剪框初始高度
+  initialWidth: 100, //裁剪框初始宽度
+  minHeight: 100, //裁剪框最小高度
+  minWidth: 100, //裁剪框最小宽度
+  maxWidth: 0, //裁剪框最大宽度  不会大于裁剪区域宽度
+  maxHeight: 0, //裁剪框最大高度  不会大于裁剪区域高度
+  cornerColor: "#39f", //裁剪框颜色
+  encode: "base64", //文件类型
+  type: "png", //保存图片类型
+  name: "img", //文件名字
+  quality: 1, //压缩质量
+  onDone: function (e) {
+    //裁剪完成
+    document.getElementById("previewImg").src = e;
+  },
+  onCancel: function () {
+    //取消裁剪
+  },
+});
 
-// getPerson.onclick = async function () {
 file.onchange = async function () {
   // 判空
   if (!file.files || !file.files[0]) {
     return;
   }
+  //实例完成后，在事件中调用以下方法即可
+  clip.setSize(file.files[0]); //参数是 单文件 file
+  return;
   // 大小判断
   if (file.files[0].size > 2 * 1024 * 1024) {
     alert("图片不能超过2M");

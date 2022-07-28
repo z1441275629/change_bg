@@ -54,7 +54,7 @@ body {
     z-index: 50;
 }
 
-#msg{
+#msg {
     position: absolute;
     left: 0;
     top: 0;
@@ -62,4 +62,21 @@ body {
     z-index: 100;
     color: red;
     font-size: 20px;
+}
+
+.bottom-buttons {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: #fff;
+    box-shadow: 2px 0 2px #ccc;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bottom-buttons .btn {
+    padding: 10px;
 }

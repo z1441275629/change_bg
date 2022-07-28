@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Cropper-Web-Demo</title>
+    <style type="text/css">
+        *{padding:0;margin:0;box-sizing: border-box;}
+        .inputbox{ width: 1000px; margin: 0 auto;}
+        .code{background:none repeat scroll 0 0 #E3F4F9;border:1px solid #BAE2F0;font:12px "Courier New",Courier,monospace;margin:30px auto;padding:10px 10px 40px;width:980px}
+        .code p{height:24px;line-height:24px}
+        .code span{zoom:1;margin-right:5px;width:85px;font-weight:bold;color:#39f}
+
+        #clipping-container{ width: 1000px; margin: 0 auto;}
+        .previewImg{ display: block; width: auto; max-width: 1000px; height: auto; margin: 10px auto;}
+    </style>
+</head>
+<body>
+    <div class="inputbox">
+        <div class="button" role="button">
+			<input type="file" name="file" class="upload-img" accept="image/*" onchange="chooseImg(this)" />
+		</div>
+    </div>
+    <div id="clipping-container"></div>
+    <img id="previewImg" src="" alt="" class="previewImg">
+
+    <script src="./js/clip.js"></script>
+    <!-- <script src="croptool.min.js"></script> -->
+    <script type="text/javascript">
+        function chooseImg(event){
+            var files = event.files || event.dataTransfer.files,
+                file = files[0] || files;
+            event.value = '';
+            window.clip = new Clip({
+                dragBoxClass: 'block',  //裁剪框类名 
+                clipRadio: 1 / 1,       //裁剪比例  宽/高  传0或空或不传等于不设置比例
+                //单位px  仅为裁剪框的宽高  不等同裁剪后最终图片宽高
+                initialHeight: 100,				//裁剪框初始高度
+                initialWidth: 100,				//裁剪框初始宽度
+                minHeight: 100,					//裁剪框最小高度
+                minWidth: 100,					//裁剪框最小宽度
+                maxWidth: 450,					//裁剪框最大宽度  不会大于裁剪区域宽度  取值需大于最小宽高
+                maxHeight: 450,					//裁剪框最大高度  不会大于裁剪区域高度
+                cornerColor: '#39f',			//裁剪框颜色
+                encode: 'base64',				//文件类型
+                type: 'png',					//保存图片类型
+                name: 'img',					//文件名字
+			    quality: 1,					    //压缩质量
+                //裁剪完成
+                onDone: function (e) {
+                    console.log(e);
+                    //return false;
+                    document.getElementById('previewImg').src = e;
+                },
+                onCancel: function(){
+
+                }
+            });
+            clip.setSize(file);
+        }
+    </script>
+</body>
+
+</html>
