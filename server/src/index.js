@@ -172,6 +172,7 @@ server.on("request", async function (request, response) {
           response.write(err);
         })
         .finally(() => {
+          console.log("token接口已响应");
           response.end();
         });
     } else if (request.url === "/api/getPerson") {
@@ -210,14 +211,16 @@ server.on("request", async function (request, response) {
               person: JSON.parse(cartoon),
             };
             response.write(JSON.stringify(responseData));
+            console.log("人体分割接口已响应");
             response.end();
             return;
           }
           response.write(res);
+          console.log("卡通图案接口已响应");
           response.end();
         } catch (err) {
           console.log(err);
-          response.end(err.message);
+          response.end(err && err.message);
         }
       });
     } else {
