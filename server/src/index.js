@@ -53,6 +53,9 @@ function getToken() {
         if (!error && response.statusCode == 200) {
           console.log(body); // 请求成功的处理逻辑
           tokenData = JSON.parse(body);
+          setTimeout(() => {
+            tokenData = null;
+          }, tokenData.expires_in - 2000);
           resolve(body);
         } else {
           reject(error);
@@ -76,13 +79,9 @@ function getPerson(image) {
         headers: {
           "content-type": "application/x-www-form-urlencoded",
         },
-        // body: JSON.stringify(requestData),
         form: requestData,
-        // data: requestData,
       },
       function (error, response, body) {
-        // console.log(error);
-        // console.log(response.body);
         if (!error && response.statusCode == 200) {
           // console.log(body) // 请求成功的处理逻辑
           resolve(body);
@@ -129,7 +128,6 @@ function toCartoon(image, type) {
       },
       function (error, response, body) {
         if (!error && response.statusCode == 200) {
-          // console.log(body) // 请求成功的处理逻辑
           resolve(body);
         } else {
           reject(error);
@@ -156,11 +154,6 @@ server.on("request", async function (request, response) {
   //跨域允许的请求方式
   response.setHeader("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");
 
-  // response.write()可以给客户端发送响应数据
-  // response.write()可以使用多次，但是最后一定要用response.end()来结束响应，否则客户端会一直等待
-  // response.end('我是内容')也可以直接发送响应数据并且直接结束
-  // response.write('我是内容1')
-  // response.write('我是内容2')
   try {
     if (request.url === "/api/token") {
       getToken()
@@ -202,22 +195,40 @@ server.on("request", async function (request, response) {
           // }
           // 先转卡通，后取人物
           const data = JSON.parse(inputData.toString());
-          const res = await toCartoon(data.image, data.type);
-          const resJson = JSON.parse(res);
-          if (resJson.image) {
-            const cartoon = await getPerson(resJson.image);
-            const responseData = {
-              cartoon: resJson.image,
-              person: JSON.parse(cartoon),
-            };
-            response.write(JSON.stringify(responseData));
-            console.log("人体分割接口已响应");
+          if (data.type) {
+            const res = await toCartoon(data.image, data.type);
+            const resJson = JSON.parse(res);
+            if (resJson.image) {
+              const cartoon = await getPerson(resJson.image);
+              const responseData = {
+                cartoon: resJson.image,
+                person: JSON.parse(cartoon),
+              };
+              response.write(JSON.stringify(responseData));
+              console.log("人体分割接口已响应");
+              response.end();
+              return;
+            }
+            response.write(res);
+            console.log("卡通图案接口已响应");
             response.end();
-            return;
+          } else {
+            if (data.image) {
+              const cartoon = await getPerson(data.image);
+              const responseData = {
+                cartoon: null,
+                person: JSON.parse(cartoon),
+              };
+              response.write(JSON.stringify(responseData));
+              console.log("人体分割接口已响应");
+              response.end();
+              return;
+            }
+            response.write(res);
+            console.log("卡通图案接口已响应");
+            response.end();
           }
-          response.write(res);
-          console.log("卡通图案接口已响应");
-          response.end();
+          
         } catch (err) {
           console.log(err);
           response.end(err && err.message);
