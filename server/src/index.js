@@ -201,7 +201,7 @@ server.on("request", async function (request, response) {
             if (resJson.image) {
               const cartoon = await getPerson(resJson.image);
               const responseData = {
-                cartoon: resJson.image,
+                // cartoon: resJson.image,
                 person: JSON.parse(cartoon),
               };
               response.write(JSON.stringify(responseData));
@@ -216,7 +216,7 @@ server.on("request", async function (request, response) {
             if (data.image) {
               const cartoon = await getPerson(data.image);
               const responseData = {
-                cartoon: null,
+                // cartoon: null,
                 person: JSON.parse(cartoon),
               };
               response.write(JSON.stringify(responseData));
@@ -228,7 +228,6 @@ server.on("request", async function (request, response) {
             console.log("卡通图案接口已响应");
             response.end();
           }
-          
         } catch (err) {
           console.log(err);
           response.end(err && err.message);

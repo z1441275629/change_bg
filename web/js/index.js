@@ -3,7 +3,7 @@
 // const apiHost = "http://localhost:3000";
 const apiHost = location.origin;
 
-function ajax() { }
+function ajax() {}
 
 // function getToken () {
 //     fetch('https://aip.baidubce.com/oauth/2.0/token', {
@@ -35,15 +35,17 @@ function blobToBase64(blob) {
   });
 }
 
+let cache = {};
+
 async function getPeople() {
   type.disabled = true;
   file.disabled = true;
-  uploadBtn.innerText = '正在分析图像...';
+  uploadBtn.innerText = "正在分析图像...";
   // 判空
   if (!file.files || !file.files[0]) {
     type.disabled = false;
     file.disabled = false;
-    uploadBtn.innerText = '上传人物照片';
+    uploadBtn.innerText = "上传人物照片";
     return;
   }
   //实例完成后，在事件中调用以下方法即可
@@ -68,6 +70,7 @@ async function getPeople() {
       response.json().then((data) => {
         // console.log(data);
         if (data.person && data.person.foreground) {
+          cache[type.value] = data;
           img.src = "data:image/png;base64," + data.person.foreground;
         }
         // cartoon.src = 'data:image/png;base64,' + data.cartoon;
@@ -75,21 +78,23 @@ async function getPeople() {
     })
     .catch((err) => {
       alert("出错了：" + err.message);
-    }).finally(() => {
+    })
+    .finally(() => {
       type.disabled = false;
       file.disabled = false;
-      uploadBtn.innerText = '上传人物照片';
+      uploadBtn.innerText = "上传人物照片";
     });
-};
+}
 
 file.onchange = function (e) {
   if (file.disabled) {
-    alert('正在分析图像, 请稍后');
+    alert("正在分析图像, 请稍后");
     e.preventDefault();
     return;
   }
+  cache = {};
   getPeople();
-}
+};
 function draggable(dom) {
   let isPressed = false;
   let touchX = 0;
@@ -274,7 +279,7 @@ function compressImg(imageFile) {
     }
     const scale = Math.sqrt(imageFile.size / 150 / 1024);
     showOriginImg.onload = function () {
-      var canvas = document.createElement('canvas');
+      var canvas = document.createElement("canvas");
       const imgWidth = showOriginImg.width;
       const imgHeight = showOriginImg.height;
       const width = parseInt(imgWidth / scale);
@@ -282,41 +287,45 @@ function compressImg(imageFile) {
       // console.log(imgWidth, imgHeight, width, height);
       canvas.width = width;
       canvas.height = height;
-      showOriginImg.style.width = width + 'px';
-      showOriginImg.style.height = height + 'px';
-      var ctx = canvas.getContext('2d');
+      showOriginImg.style.width = width + "px";
+      showOriginImg.style.height = height + "px";
+      var ctx = canvas.getContext("2d");
       ctx.drawImage(showOriginImg, 0, 0, width, height);
-      const data = canvas.toDataURL('image/png');
+      const data = canvas.toDataURL("image/png");
       // console.log(data.length / 1024 + 'k');
       resolve(data);
-    }
+    };
     showOriginImg.onerror = function (err) {
       reject(err);
-    }
+    };
     showOriginImg.src = imageBase64;
   });
 }
 
-document.querySelector('.choose-bg-btn').onclick = function () {
-  document.querySelector('.choose-bg').classList.remove('hide');
-}
+document.querySelector(".choose-bg-btn").onclick = function () {
+  document.querySelector(".choose-bg").classList.remove("hide");
+};
 
-document.querySelector('.choose-bg').onclick = function () {
-  document.querySelector('.choose-bg').classList.add('hide');
-}
+document.querySelector(".choose-bg").onclick = function () {
+  document.querySelector(".choose-bg").classList.add("hide");
+};
 
-document.querySelector('.content-body').onclick = function (e) {
+document.querySelector(".content-body").onclick = function (e) {
   e.stopPropagation();
-  if (e.target.tagName.toLowerCase() === 'img') {
-    document.querySelector('.bg').src = e.target.getAttribute('src');
-    document.querySelector('.choose-bg').classList.add('hide');
+  if (e.target.tagName.toLowerCase() === "img") {
+    document.querySelector(".bg").src = e.target.getAttribute("src");
+    document.querySelector(".choose-bg").classList.add("hide");
   }
 };
 
 type.onchange = function () {
+  if (cache[type.value]) {
+    img.src = "data:image/png;base64," + cache[type.value].person.foreground;
+    return;
+  }
   // type.disabled = true;
   getPeople();
-}
+};
 
 // 保存成png格式的图片
 function saveAsPNG(canvas) {
@@ -329,7 +338,7 @@ function saveAsPNG(canvas) {
  * */
 function downLoad(url, fileName) {
   var oA = document.createElement("a");
-  oA.download = fileName || '';// 设置下载的文件名，默认是'下载'
+  oA.download = fileName || ""; // 设置下载的文件名，默认是'下载'
   oA.href = url;
   document.body.appendChild(oA);
   oA.click();
@@ -337,11 +346,11 @@ function downLoad(url, fileName) {
 }
 
 savedImg.onclick = function () {
-  savedImg.classList.add('hide');
-}
+  savedImg.classList.add("hide");
+};
 
 function toast(msg) {
-  var p = document.createElement('p');
+  var p = document.createElement("p");
   // p.id = 'toast';
   p.innerText = msg;
   document.body.appendChild(p);
@@ -352,15 +361,15 @@ function toast(msg) {
 }
 
 function downloadImg() {
-  const dom = document.querySelector('.wrap');
+  const dom = document.querySelector(".wrap");
 
-  html2canvas(dom).then(canvas => {
+  html2canvas(dom).then((canvas) => {
     // document.body.appendChild(canvas);
     const url = saveAsPNG(canvas);
     savedImg.src = url;
-    savedImg.classList.remove('hide');
-    downLoad(url, new Date().toLocaleTimeString() + '.png');
-    toast('长按图片保存到本地');
+    savedImg.classList.remove("hide");
+    downLoad(url, new Date().toLocaleTimeString() + ".png");
+    toast("长按图片保存到本地");
   });
 
   return;
@@ -371,33 +380,33 @@ function downloadImg() {
   console.log(width, height);
 
   // var style = document.querySelector('style').outerHTML;
-  var style = '';
+  var style = "";
 
-  var html = dom.outerHTML.replace(/<img /g, '<image ').replace(/src/g, 'xlink:href'); // replace(/%0A/g, '');
+  var html = dom.outerHTML.replace(/<img /g, "<image ").replace(/src/g, "xlink:href"); // replace(/%0A/g, '');
   console.log(html);
   var svgStr = `<svg xmlns="http://www.w3.org/2000/svg" charset="utf-8" width="${width}px" height="${height}px"><foreignObject width="100%" height="100%"><div xmlns='http://www.w3.org/1999/xhtml' style='font-size:16px;font-family:Helvetica'>${style}${html}</div></foreignObject></svg>`;
-  var oImg = document.createElement('img');
-  console.log(svgStr)
+  var oImg = document.createElement("img");
+  console.log(svgStr);
   const src = `data:image/svg+xml,${svgStr}`;
-  oImg.width = width + 'px';
-  oImg.height = height + 'px';
+  oImg.width = width + "px";
+  oImg.height = height + "px";
 
   document.body.appendChild(oImg);
   // return;
   oImg.onload = function () {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
     canvas.width = width;
     canvas.height = height;
     ctx.drawImage(oImg, 0, 0);
     const url = saveAsPNG(canvas);
-    downLoad(url, new Date().toLocaleTimeString() + '.png');
+    downLoad(url, new Date().toLocaleTimeString() + ".png");
     oImg.remove();
-  }
+  };
   oImg.onerror = function (err) {
     console.log(err);
-  }
+  };
   oImg.src = src;
 }
 
-document.querySelector('.save').onclick = downloadImg;
+document.querySelector(".save").onclick = downloadImg;
