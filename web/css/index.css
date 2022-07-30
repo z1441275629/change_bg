@@ -9,6 +9,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-bottom: constant(safe-area-inset-bottom); /*兼容 IOS<11.2*/
+    padding-bottom: env(safe-area-inset-bottom); /*兼容 IOS>11.2*/
 }
 
 .bottom-buttons .btn {
@@ -45,6 +47,8 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+    max-height: 100vh;
+    overflow-y: auto;
 }
 
 .content-body img {
