@@ -3,7 +3,7 @@
 // const apiHost = "http://localhost:3000";
 const apiHost = location.origin;
 
-function ajax() {}
+function ajax() { }
 
 // function getToken () {
 //     fetch('https://aip.baidubce.com/oauth/2.0/token', {
@@ -351,7 +351,7 @@ savedImg.onclick = function () {
 
 function toast(msg) {
   var p = document.createElement("p");
-  // p.id = 'toast';
+  p.classList.add('toast');
   p.innerText = msg;
   document.body.appendChild(p);
   setTimeout(() => {
@@ -360,16 +360,30 @@ function toast(msg) {
   }, 2000);
 }
 
+/**
+ * 是否是微信环境
+ * @returns {boolean}
+ */
+function isWeChat() {
+  var ua = navigator.userAgent.toLowerCase();
+  var reg = /MicroMessenger/i;
+  return reg.test(ua);
+}
+
 function downloadImg() {
   const dom = document.querySelector(".wrap");
 
   html2canvas(dom).then((canvas) => {
     // document.body.appendChild(canvas);
     const url = saveAsPNG(canvas);
-    savedImg.src = url;
-    savedImg.classList.remove("hide");
-    downLoad(url, new Date().toLocaleTimeString() + ".png");
-    toast("长按图片保存到本地");
+    if (isWeChat()) {
+      // 微信中限制了下载东西
+      savedImg.src = url;
+      savedImg.classList.remove("hide");
+      toast("长按图片保存到本地");
+    } else {
+      downLoad(url, new Date().toLocaleTimeString() + ".png");
+    }
   });
 
   return;
